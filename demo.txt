@@ -1,0 +1,83 @@
+(function() {
+    'use strict';
+    
+    var deps = [
+        'ngMaterial'
+    ];
+    
+    angular.module('sandbox', deps)
+        .directive('dialog', dialogDirective)
+        .run(htmlTemplateCache)
+    ;
+    
+    /**
+     * Dynamic Dialog Directive
+     */
+    function dialogDirective($document, $mdDialog) {
+        return link;
+
+        function link(scope, element, attrs) {
+            var templateName = attrs.dialog;
+            var templateUrl;
+
+            if (templateName && templateName !== null && templateName.length) {
+                templateUrl = 'dialog/' + templateName + '.html';
+                element.on('click', showDialog);
+            }
+
+            function showDialog(event) {
+                $mdDialog.show({
+                    clickOutsideToClose: true,
+                    controller         : DialogController,
+                    controllerAs       : 'vm',
+                    parent             : $document.find('body').eq(0),
+                    templateUrl        : templateUrl,
+                    targetEvent        : event
+                });
+            }
+        }
+    }
+
+   
+
+    /**
+     * Normally you would have your templates in separate HTML files
+     */
+    function htmlTemplateCache($templateCache) {
+        $templateCache.put('dialog/foo.html',
+                           '<md-dialog>'+'<md-toolbar>'+'</md-toolbar>'+
+     '<md-dialog-content>' + 
+                           '<md-input-container>'+
+     '<label>Title</label>'+
+      '<input ng-model="user.title">'+
+    '</md-input-container>'+
+    '<md-input-container>'+
+      '<label>Email</label>'+
+     '<input ng-model="user.email" type="email">'+
+   '</md-input-container>'+
+                           '</md-dialog-content>'+
+   '</md-dialog>'
+        );
+        
+       
+    }
+    
+})();
+        
+      
+        
+      
+
+-------------------------
+<div ng-app="sandbox">
+    <md-button class="md-raised" dialog="foo">Add user</md-button>
+    <md-button class="md-raised" dialog="bar">Bar</md-button>
+</div>
+    <!-- /#wrapper -->
+
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+
